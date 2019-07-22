@@ -31,7 +31,8 @@ def create_app(config_name=None):
 
     app = Flask('bluelog')
     app.config.from_object(config[config_name])
-
+    app.jinja_env.auto_reload = True
+    app.config['TEMPLATES_AUTO_RELOAD'] = True
     register_logging(app)
     register_extensions(app)
     register_blueprints(app)
