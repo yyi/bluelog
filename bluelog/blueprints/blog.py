@@ -46,7 +46,8 @@ def show_category(category_id):
     per_page = current_app.config['BLUELOG_POST_PER_PAGE']
     pagination = Post.query.with_parent(category).order_by(Post.timestamp.desc()).paginate(page, per_page)
     posts = pagination.items
-    return render_template('blog/category.html', category=category, pagination=pagination, posts=posts)
+    q = {post.id: get_count(db.session.query(Comment).filter(Comment.post_id == post.id)) for post in posts}
+    return render_template('blog/category.html', category=category, pagination=pagination, posts=posts, post_comments=q)
 
 
 @blog_bp.route('/post/<int:post_id>', methods=['GET', 'POST'])
