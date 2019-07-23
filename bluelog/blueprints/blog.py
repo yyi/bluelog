@@ -7,6 +7,7 @@
 """
 from flask import render_template, flash, redirect, url_for, request, current_app, Blueprint, abort, make_response
 from flask_login import current_user
+from sqlalchemy import func
 
 from bluelog.emails import send_new_comment_email, send_new_reply_email
 from bluelog.extensions import db
@@ -23,7 +24,14 @@ def index():
     per_page = current_app.config['BLUELOG_POST_PER_PAGE']
     pagination = Post.query.order_by(Post.timestamp.desc()).paginate(page, per_page=per_page)
     posts = pagination.items
-    return render_template('blog/index.html', pagination=pagination, posts=posts)
+    q = {post.id: get_count(db.session.query(Comment).filter(Comment.post_id == post.id)) for post in posts}
+    return render_template('blog/index.html', pagination=pagination, posts=posts, post_comments=q)
+
+
+def get_count(q):
+    count_q = q.statement.with_only_columns([func.count()]).order_by(None)
+    count = q.session.execute(count_q).scalar()
+    return count
 
 
 @blog_bp.route('/about')

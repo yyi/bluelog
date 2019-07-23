@@ -47,19 +47,24 @@ class BaseConfig(object):
     BLUELOG_UPLOAD_PATH = os.path.join(basedir, 'uploads')
     BLUELOG_ALLOWED_IMAGE_EXTENSIONS = ['png', 'jpg', 'jpeg', 'gif']
 
+    SQLALCHEMY_ECHO = True
+
 
 class DevelopmentConfig(BaseConfig):
-    SQLALCHEMY_DATABASE_URI = prefix + os.path.join(basedir, 'data-dev.db')
+    # SQLALCHEMY_DATABASE_URI = prefix + os.path.join(basedir, 'data-dev.db')
+    SQLALCHEMY_DATABASE_URI = "mysql+pymysql://test:test@localhost/test"
 
 
 class TestingConfig(BaseConfig):
     TESTING = True
     WTF_CSRF_ENABLED = False
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'  # in-memory database
+    # SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'  # in-memory database
+    SQLALCHEMY_DATABASE_URI = "mysql+pymysql://test:test@localhost/test"
 
 
 class ProductionConfig(BaseConfig):
-    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', prefix + os.path.join(basedir, 'data.db'))
+    # SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', prefix + os.path.join(basedir, 'data.db'))
+    SQLALCHEMY_DATABASE_URI = "mysql+pymysql://test:test@localhost/test"
 
 
 config = {
